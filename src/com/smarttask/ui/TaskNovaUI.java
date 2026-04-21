@@ -75,9 +75,7 @@ public class TaskNovaUI {
         });
     }
 
-    // ══════════════════════════════════════════════════════
     //  FRAME SETUP
-    // ══════════════════════════════════════════════════════
 
     private void buildFrame() {
         frame = new JFrame("TaskNova Smart Task Priority Organizer");
@@ -96,9 +94,7 @@ public class TaskNovaUI {
         frame.setContentPane(root);
     }
 
-    // ══════════════════════════════════════════════════════
     //  HEADER
-    // ══════════════════════════════════════════════════════
 
     private JPanel buildHeader() {
         JPanel header = new JPanel(new BorderLayout());
@@ -136,9 +132,8 @@ public class TaskNovaUI {
         return header;
     }
 
-    // ══════════════════════════════════════════════════════
+
     //  BODY
-    // ══════════════════════════════════════════════════════
 
     private JPanel buildBody() {
         JPanel body = new JPanel(new GridBagLayout());
@@ -177,9 +172,7 @@ public class TaskNovaUI {
         return body;
     }
 
-    // ══════════════════════════════════════════════════════
     //  STATS ROW
-    // ══════════════════════════════════════════════════════
 
     private JPanel buildStatsRow() {
         JPanel row = new JPanel(new GridLayout(1, 3, 10, 0));
@@ -213,11 +206,8 @@ public class TaskNovaUI {
         return card;
     }
 
-    // ══════════════════════════════════════════════════════
     //  ADD TASK CARD
-    // ══════════════════════════════════════════════════════
-
-    private JPanel buildAddTaskCard() {
+      private JPanel buildAddTaskCard() {
         JPanel card = roundedCard();
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
         card.setBorder(new EmptyBorder(14, 16, 14, 16));
@@ -301,7 +291,7 @@ public class TaskNovaUI {
                 impButtons[i].setForeground(PURPLE_DARK);
                 impButtons[i].setBorder(new LineBorder(PURPLE_MID, 1, true));
             } else {
-                impButtons[i].setBackground(new Color(245, 245, 243));
+                impButtons[i].setBackground(new Color(132, 120, 234));
                 impButtons[i].setForeground(TEXT_SEC);
                 impButtons[i].setBorder(new LineBorder(BORDER, 1, true));
             }
