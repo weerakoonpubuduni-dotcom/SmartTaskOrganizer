@@ -5,8 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="da555162-269c-42db-b1ca-f5f3f0bbd2b7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/com/smarttask/manager/TaskManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/com/smarttask/ui/TaskNovaUI.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/SmartTaskOrganizer/com/smarttask/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SmartTaskOrganizer/com/smarttask/Main.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/SmartTaskOrganizer/com/smarttask/manager/TaskManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SmartTaskOrganizer/com/smarttask/manager/TaskManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/smarttask/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/smarttask/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/smarttask/manager/TaskManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/smarttask/manager/TaskManager.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,7 +40,7 @@
   }
 }</component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="ProjectErrors" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,

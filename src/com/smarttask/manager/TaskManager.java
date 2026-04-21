@@ -110,4 +110,18 @@ public class TaskManager {
     public int getAlertThreshold() {
         return alertThreshold;
     }
+    // Get all tasks sorted by priority (for dashboard list)
+    public List<Task> getAllTasks() {
+        return avlTree.getSortedTasks();
+    }
+
+    // Get deadline alerts (for alert panel)
+    public List<Task> getAlerts() {
+        return minHeap.getDeadlineAlerts();
+    }
+
+    // Get highest priority task (for next task panel)
+    public Task getNextTask() {
+        return avlTree.getHighestPriority();
+    }
 }
