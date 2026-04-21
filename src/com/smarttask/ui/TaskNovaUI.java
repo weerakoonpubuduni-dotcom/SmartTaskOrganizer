@@ -373,9 +373,9 @@ public class TaskNovaUI {
         return card;
     }
 
-    // ══════════════════════════════════════════════════════
+
     //  TASK LIST CARD
-    // ══════════════════════════════════════════════════════
+
 
     private JPanel buildTaskListCard() {
         JPanel card = roundedCard();
@@ -618,9 +618,9 @@ public class TaskNovaUI {
         return badge;
     }
 
-    // ══════════════════════════════════════════════════════
+
     //  ADD TASK ACTION
-    // ══════════════════════════════════════════════════════
+
 
     private void onAddTask() {
         String name = nameField.getText().trim();
@@ -682,7 +682,7 @@ public class TaskNovaUI {
                 new LineBorder(BORDER, 1, true),
                 new EmptyBorder(4, 8, 4, 8)
         ));
-        f.setBackground(new Color(249, 248, 245));
+        f.setBackground(new Color(157, 170, 202));
         f.setForeground(TEXT_PRI);
         f.setAlignmentX(Component.LEFT_ALIGNMENT);
     }
