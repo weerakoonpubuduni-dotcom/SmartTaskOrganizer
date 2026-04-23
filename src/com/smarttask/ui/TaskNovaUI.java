@@ -28,22 +28,24 @@ public class TaskNovaUI {
     private JLabel nextTaskName, nextTaskMeta;
 
     // ─── Colors ───────────────────────────────────────────
-    private static final Color BG          = new Color(208, 183, 234);
+    private static final Color BG          = new Color(216, 195, 237);
     private static final Color WHITE       = Color.WHITE;
     private static final Color PURPLE_LIGHT= new Color(238, 237, 254);
     private static final Color PURPLE_MID  = new Color(127, 119, 221);
     private static final Color PURPLE_DARK = new Color(60,  52,  137);
     private static final Color BORDER      = new Color(220, 218, 212);
-    private static final Color TEXT_PRI    = new Color(30,  30,  28);
-    private static final Color TEXT_SEC    = new Color(85,  84,  80);
+    private static final Color TEXT_PRI    = new Color(9, 9, 8);
+    private static final Color TEXT_SEC    = new Color(87, 86, 86);
+    private static final Color TEXT_SEC2   = new Color(207, 204, 204);
     private static final Color RED_BG      = new Color(252, 235, 235);
-    private static final Color RED_TEXT    = new Color(163, 45,  45);
+    private static final Color RED_TEXT    = new Color(113, 15, 15);
     private static final Color ORANGE_BG   = new Color(250, 238, 218);
     private static final Color ORANGE_TEXT = new Color(133, 79,  11);
     private static final Color YELLOW_BG   = new Color(250, 238, 218);
     private static final Color YELLOW_TEXT = new Color(186, 117, 23);
     private static final Color GREEN_BG    = new Color(234, 243, 222);
     private static final Color GREEN_TEXT  = new Color(59,  109, 17);
+    private static final Color BLUE_TEXT  = new Color(212, 232, 236);
 
     public TaskNovaUI() {
         this.manager = new TaskManager(3);
@@ -53,9 +55,6 @@ public class TaskNovaUI {
         SwingUtilities.invokeLater(() -> {
             buildFrame();
 
-            // Only seed sample data on the very first launch.
-            // isFirstRun() was captured inside TaskManager's constructor,
-            // BEFORE loadPersistedTasks() ran — so this is always accurate.
             if (manager.isFirstRun()) {
                 System.out.println("🌱 First launch — seeding sample tasks.");
                 loadSampleTasks();
@@ -172,7 +171,7 @@ public class TaskNovaUI {
         valueLabel.setFont(new Font("SansSerif", Font.BOLD, 22));
         valueLabel.setForeground(valueColor);
         JLabel lbl = new JLabel(labelText, SwingConstants.CENTER);
-        lbl.setFont(new Font("SansSerif", Font.PLAIN, 11));
+        lbl.setFont(new Font("SansSerif", Font.BOLD, 13));
         lbl.setForeground(TEXT_SEC);
         card.add(valueLabel);
         card.add(lbl);
@@ -193,10 +192,12 @@ public class TaskNovaUI {
         card.add(Box.createVerticalStrut(4));
         nameField = new JTextField();
         nameField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 32));
-        nameField.setFont(new Font("SansSerif", Font.PLAIN, 13));
+        nameField.setFont(new Font("SansSerif", Font.BOLD, 13));
         styleTextField(nameField);
+        nameField.setForeground(TEXT_PRI);
+        nameField.setBackground(BLUE_TEXT);
         card.add(nameField);
-        card.add(Box.createVerticalStrut(10));
+        card.add(Box.createVerticalStrut(7));
 
         card.add(fieldLabel("Deadline (yyyy-MM-dd)"));
         card.add(Box.createVerticalStrut(4));
@@ -205,19 +206,21 @@ public class TaskNovaUI {
         deadlineField.setFont(new Font("SansSerif", Font.PLAIN, 13));
         deadlineField.setText(LocalDate.now().plusDays(3).toString());
         styleTextField(deadlineField);
+        deadlineField.setForeground(TEXT_PRI);
+        deadlineField.setBackground(BLUE_TEXT);
         card.add(deadlineField);
-        card.add(Box.createVerticalStrut(10));
+        card.add(Box.createVerticalStrut(7));
 
         card.add(fieldLabel("Importance (1 = Low  →  5 = High)"));
         card.add(Box.createVerticalStrut(4));
         card.add(buildImportanceButtons());
         card.add(Box.createVerticalStrut(12));
 
-        JButton addBtn = new JButton("+ Add Task");
+        JButton addBtn = new JButton("Add Task");
         addBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 34));
-        addBtn.setFont(new Font("SansSerif", Font.PLAIN, 13));
+        addBtn.setFont(new Font("SansSerif", Font.BOLD, 13));
         addBtn.setForeground(TEXT_PRI);
-        addBtn.setBackground(WHITE);
+        addBtn.setBackground(TEXT_SEC2);
         addBtn.setBorder(new CompoundBorder(
                 new LineBorder(BORDER, 1, true),
                 new EmptyBorder(4, 12, 4, 12)));
@@ -239,7 +242,7 @@ public class TaskNovaUI {
             btn.setFont(new Font("SansSerif", Font.PLAIN, 12));
             btn.setFocusPainted(false);
             btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            btn.setBorder(new LineBorder(BORDER, 1, true));
+            btn.setBorder(new LineBorder(BORDER, 0, true));
             btn.addActionListener(e -> { selectedImportance = val; refreshImportanceButtons(); });
             impButtons[i - 1] = btn;
             row.add(btn);
@@ -255,9 +258,9 @@ public class TaskNovaUI {
                 impButtons[i].setForeground(PURPLE_DARK);
                 impButtons[i].setBorder(new LineBorder(PURPLE_MID, 1, true));
             } else {
-                impButtons[i].setBackground(new Color(132, 120, 234));
-                impButtons[i].setForeground(TEXT_SEC);
-                impButtons[i].setBorder(new LineBorder(BORDER, 3, true));
+                impButtons[i].setBackground(new Color(154, 136, 172));
+                impButtons[i].setForeground(TEXT_PRI);
+                impButtons[i].setBorder(new LineBorder(BORDER, 1, true));
             }
         }
     }
@@ -285,7 +288,7 @@ public class TaskNovaUI {
         JPanel card = new JPanel(new FlowLayout(FlowLayout.LEFT, 14, 10));
         card.setBackground(PURPLE_LIGHT);
         card.setBorder(new CompoundBorder(
-                new LineBorder(new Color(175, 169, 236), 1, true),
+                new LineBorder(new Color(135, 127, 225), 1, true),
                 new EmptyBorder(2, 4, 2, 4)));
 
         JLabel iconLbl = new JLabel("★") {

@@ -5,9 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="da555162-269c-42db-b1ca-f5f3f0bbd2b7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/com/smarttask/storage/TaskStorage.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/smarttask/manager/TaskManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/smarttask/manager/TaskManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/SmartTaskOrganizer/com/smarttask/ui/TaskNovaUI$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SmartTaskOrganizer/com/smarttask/ui/TaskNovaUI$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/SmartTaskOrganizer/com/smarttask/ui/TaskNovaUI.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SmartTaskOrganizer/com/smarttask/ui/TaskNovaUI.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/smarttask/ui/TaskNovaUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/smarttask/ui/TaskNovaUI.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -72,5 +72,21 @@
       <updated>1776585513899</updated>
     </task>
     <servers />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/com/smarttask/ui/TaskNovaUI.java</url>
+          <line>160</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/com/smarttask/ui/TaskNovaUI.java</url>
+          <line>162</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
