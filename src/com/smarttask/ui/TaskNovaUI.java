@@ -1,6 +1,9 @@
 package com.smarttask.ui;
+
 import com.smarttask.manager.TaskManager;
 import com.smarttask.model.Task;
+import com.smarttask.storage.TaskStorage;
+
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
@@ -10,35 +13,19 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
-
 public class TaskNovaUI {
+
     private TaskManager manager;
     private static final DateTimeFormatter DATE_FORMAT =
             DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    // ─── Main Window ──────────────────────────────────────
     private JFrame frame;
-
-    // ─── Stat Labels ──────────────────────────────────────
-    private JLabel totalLabel;
-    private JLabel dueSoonLabel;
-    private JLabel overdueLabel;
-
-    // ─── Input Fields ─────────────────────────────────────
-    private JTextField nameField;
-    private JTextField deadlineField;
+    private JLabel totalLabel, dueSoonLabel, overdueLabel;
+    private JTextField nameField, deadlineField;
     private int selectedImportance = 3;
     private JButton[] impButtons;
-
-    // ─── Task Table ───────────────────────────────────────
-    private JPanel taskListPanel;
-
-    // ─── Alert Panel ──────────────────────────────────────
-    private JPanel alertPanel;
-
-    // ─── Next Task Label ──────────────────────────────────
-    private JLabel nextTaskName;
-    private JLabel nextTaskMeta;
+    private JPanel taskListPanel, alertPanel;
+    private JLabel nextTaskName, nextTaskMeta;
 
     // ─── Colors ───────────────────────────────────────────
     private static final Color BG          = new Color(208, 183, 234);
@@ -48,7 +35,7 @@ public class TaskNovaUI {
     private static final Color PURPLE_DARK = new Color(60,  52,  137);
     private static final Color BORDER      = new Color(220, 218, 212);
     private static final Color TEXT_PRI    = new Color(30,  30,  28);
-    private static final Color TEXT_SEC    = new Color(85, 84, 80);
+    private static final Color TEXT_SEC    = new Color(85,  84,  80);
     private static final Color RED_BG      = new Color(252, 235, 235);
     private static final Color RED_TEXT    = new Color(163, 45,  45);
     private static final Color ORANGE_BG   = new Color(250, 238, 218);
@@ -58,22 +45,33 @@ public class TaskNovaUI {
     private static final Color GREEN_BG    = new Color(234, 243, 222);
     private static final Color GREEN_TEXT  = new Color(59,  109, 17);
 
-    // ─── Constructor
     public TaskNovaUI() {
         this.manager = new TaskManager(3);
     }
 
-    // ─── Entry Point
     public void start() {
         SwingUtilities.invokeLater(() -> {
             buildFrame();
-            loadSampleTasks();
+
+            // Only seed sample data on the very first launch.
+            // isFirstRun() was captured inside TaskManager's constructor,
+            // BEFORE loadPersistedTasks() ran — so this is always accurate.
+            if (manager.isFirstRun()) {
+                System.out.println("🌱 First launch — seeding sample tasks.");
+                loadSampleTasks();
+            } else {
+                System.out.println("🔄 Existing save found — skipping sample tasks.");
+            }
+
             refreshDashboard();
             frame.setVisible(true);
+
+            // Print save path so you can verify the file exists on disk
+            System.out.println("📁 Save file: " + TaskStorage.getStoragePath());
         });
     }
 
-    //  FRAME SETUP
+    // ── Frame ─────────────────────────────────────────────
 
     private void buildFrame() {
         frame = new JFrame("TaskNova Smart Task Priority Organizer");
@@ -84,25 +82,20 @@ public class TaskNovaUI {
 
         JPanel root = new JPanel(new BorderLayout(0, 0));
         root.setBackground(BG);
-        root.setBorder(new EmptyBorder(0, 0, 0, 0));
-
-        root.add(buildHeader(),  BorderLayout.NORTH);
-        root.add(buildBody(),    BorderLayout.CENTER);
-
+        root.add(buildHeader(), BorderLayout.NORTH);
+        root.add(buildBody(),   BorderLayout.CENTER);
         frame.setContentPane(root);
     }
 
-    //  HEADER
+    // ── Header ────────────────────────────────────────────
 
     private JPanel buildHeader() {
         JPanel header = new JPanel(new BorderLayout());
         header.setBackground(WHITE);
         header.setBorder(new CompoundBorder(
                 new MatteBorder(0, 0, 1, 0, BORDER),
-                new EmptyBorder(14, 20, 14, 20)
-        ));
+                new EmptyBorder(14, 20, 14, 20)));
 
-        // Icon + title
         JPanel left = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         left.setBackground(WHITE);
 
@@ -113,7 +106,7 @@ public class TaskNovaUI {
         JPanel titleBlock = new JPanel(new GridLayout(2, 1, 0, 1));
         titleBlock.setBackground(WHITE);
 
-        JLabel title = new JLabel("TaskNova ");
+        JLabel title = new JLabel("TaskNova");
         title.setFont(new Font("SansSerif", Font.BOLD, 18));
         title.setForeground(TEXT_PRI);
 
@@ -126,12 +119,10 @@ public class TaskNovaUI {
         left.add(icon);
         left.add(titleBlock);
         header.add(left, BorderLayout.WEST);
-
         return header;
     }
 
-
-    //  BODY
+    // ── Body ──────────────────────────────────────────────
 
     private JPanel buildBody() {
         JPanel body = new JPanel(new GridBagLayout());
@@ -142,48 +133,35 @@ public class TaskNovaUI {
         g.insets = new Insets(5, 5, 5, 5);
         g.fill   = GridBagConstraints.BOTH;
 
-        // ── Row 0: Stats (spans full width) ──
-        g.gridx = 0; g.gridy = 0;
-        g.gridwidth = 3; g.weightx = 1; g.weighty = 0;
+        g.gridx = 0; g.gridy = 0; g.gridwidth = 3; g.weightx = 1; g.weighty = 0;
         body.add(buildStatsRow(), g);
 
-        // ── Row 1 left: Add Task form ──
-        g.gridx = 0; g.gridy = 1;
-        g.gridwidth = 1; g.weightx = 0.35; g.weighty = 0.45;
+        g.gridx = 0; g.gridy = 1; g.gridwidth = 1; g.weightx = 0.35; g.weighty = 0.45;
         body.add(buildAddTaskCard(), g);
 
-        // ── Row 1 right: Alerts ──
-        g.gridx = 1; g.gridy = 1;
-        g.gridwidth = 2; g.weightx = 0.65; g.weighty = 0.45;
+        g.gridx = 1; g.gridy = 1; g.gridwidth = 2; g.weightx = 0.65; g.weighty = 0.45;
         body.add(buildAlertsCard(), g);
 
-        // ── Row 2: Recommended next task (spans full width) ──
-        g.gridx = 0; g.gridy = 2;
-        g.gridwidth = 3; g.weightx = 1; g.weighty = 0;
+        g.gridx = 0; g.gridy = 2; g.gridwidth = 3; g.weightx = 1; g.weighty = 0;
         body.add(buildNextTaskCard(), g);
 
-        // ── Row 3: Task list (spans full width) ──
-        g.gridx = 0; g.gridy = 3;
-        g.gridwidth = 3; g.weightx = 1; g.weighty = 0.55;
+        g.gridx = 0; g.gridy = 3; g.gridwidth = 3; g.weightx = 1; g.weighty = 0.55;
         body.add(buildTaskListCard(), g);
 
         return body;
     }
 
-    //  STATS ROW
+    // ── Stats ─────────────────────────────────────────────
 
     private JPanel buildStatsRow() {
         JPanel row = new JPanel(new GridLayout(1, 3, 10, 0));
         row.setBackground(BG);
-
         totalLabel   = new JLabel("0", SwingConstants.CENTER);
         dueSoonLabel = new JLabel("0", SwingConstants.CENTER);
         overdueLabel = new JLabel("0", SwingConstants.CENTER);
-
-        row.add(statCard(totalLabel,   "Total tasks",   TEXT_PRI));
-        row.add(statCard(dueSoonLabel, "Due soon",      new Color(186, 117, 23)));
-        row.add(statCard(overdueLabel, "Overdue",       RED_TEXT));
-
+        row.add(statCard(totalLabel,   "Total tasks", TEXT_PRI));
+        row.add(statCard(dueSoonLabel, "Due soon",    new Color(186, 117, 23)));
+        row.add(statCard(overdueLabel, "Overdue",     RED_TEXT));
         return row;
     }
 
@@ -191,21 +169,19 @@ public class TaskNovaUI {
         JPanel card = roundedCard();
         card.setLayout(new GridLayout(2, 1, 0, 2));
         card.setBorder(new EmptyBorder(10, 12, 10, 12));
-
         valueLabel.setFont(new Font("SansSerif", Font.BOLD, 22));
         valueLabel.setForeground(valueColor);
-
         JLabel lbl = new JLabel(labelText, SwingConstants.CENTER);
         lbl.setFont(new Font("SansSerif", Font.PLAIN, 11));
         lbl.setForeground(TEXT_SEC);
-
         card.add(valueLabel);
         card.add(lbl);
         return card;
     }
 
-    //  ADD TASK CARD
-      private JPanel buildAddTaskCard() {
+    // ── Add Task Card ─────────────────────────────────────
+
+    private JPanel buildAddTaskCard() {
         JPanel card = roundedCard();
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
         card.setBorder(new EmptyBorder(14, 16, 14, 16));
@@ -213,7 +189,6 @@ public class TaskNovaUI {
         card.add(sectionLabel("ADD NEW TASK"));
         card.add(Box.createVerticalStrut(10));
 
-        // Task name
         card.add(fieldLabel("Task name"));
         card.add(Box.createVerticalStrut(4));
         nameField = new JTextField();
@@ -223,7 +198,6 @@ public class TaskNovaUI {
         card.add(nameField);
         card.add(Box.createVerticalStrut(10));
 
-        // Deadline
         card.add(fieldLabel("Deadline (yyyy-MM-dd)"));
         card.add(Box.createVerticalStrut(4));
         deadlineField = new JTextField();
@@ -234,13 +208,11 @@ public class TaskNovaUI {
         card.add(deadlineField);
         card.add(Box.createVerticalStrut(10));
 
-        // Importance buttons
         card.add(fieldLabel("Importance (1 = Low  →  5 = High)"));
         card.add(Box.createVerticalStrut(4));
         card.add(buildImportanceButtons());
         card.add(Box.createVerticalStrut(12));
 
-        // Add button
         JButton addBtn = new JButton("+ Add Task");
         addBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 34));
         addBtn.setFont(new Font("SansSerif", Font.PLAIN, 13));
@@ -248,13 +220,11 @@ public class TaskNovaUI {
         addBtn.setBackground(WHITE);
         addBtn.setBorder(new CompoundBorder(
                 new LineBorder(BORDER, 1, true),
-                new EmptyBorder(4, 12, 4, 12)
-        ));
+                new EmptyBorder(4, 12, 4, 12)));
         addBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         addBtn.setFocusPainted(false);
         addBtn.addActionListener(e -> onAddTask());
         card.add(addBtn);
-
         return card;
     }
 
@@ -263,7 +233,6 @@ public class TaskNovaUI {
         row.setBackground(WHITE);
         row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
         impButtons = new JButton[5];
-
         for (int i = 1; i <= 5; i++) {
             final int val = i;
             JButton btn = new JButton(String.valueOf(i));
@@ -271,10 +240,7 @@ public class TaskNovaUI {
             btn.setFocusPainted(false);
             btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             btn.setBorder(new LineBorder(BORDER, 1, true));
-            btn.addActionListener(e -> {
-                selectedImportance = val;
-                refreshImportanceButtons();
-            });
+            btn.addActionListener(e -> { selectedImportance = val; refreshImportanceButtons(); });
             impButtons[i - 1] = btn;
             row.add(btn);
         }
@@ -296,47 +262,36 @@ public class TaskNovaUI {
         }
     }
 
-    // ══════════════════════════════════════════════════════
-    //  ALERTS CARD
-    // ══════════════════════════════════════════════════════
+    // ── Alerts Card ───────────────────────────────────────
 
     private JPanel buildAlertsCard() {
         JPanel card = roundedCard();
         card.setLayout(new BorderLayout(0, 8));
         card.setBorder(new EmptyBorder(14, 16, 14, 16));
-
         card.add(sectionLabel("DEADLINE ALERTS"), BorderLayout.NORTH);
-
         alertPanel = new JPanel();
         alertPanel.setLayout(new BoxLayout(alertPanel, BoxLayout.Y_AXIS));
         alertPanel.setBackground(WHITE);
-
         JScrollPane scroll = new JScrollPane(alertPanel);
         scroll.setBorder(BorderFactory.createEmptyBorder());
         scroll.setBackground(WHITE);
         card.add(scroll, BorderLayout.CENTER);
-
         return card;
     }
 
-    // ══════════════════════════════════════════════════════
-    //  NEXT TASK CARD
-    // ══════════════════════════════════════════════════════
+    // ── Next Task Card ────────────────────────────────────
 
     private JPanel buildNextTaskCard() {
         JPanel card = new JPanel(new FlowLayout(FlowLayout.LEFT, 14, 10));
         card.setBackground(PURPLE_LIGHT);
         card.setBorder(new CompoundBorder(
                 new LineBorder(new Color(175, 169, 236), 1, true),
-                new EmptyBorder(2, 4, 2, 4)
-        ));
+                new EmptyBorder(2, 4, 2, 4)));
 
-        // Circle icon
         JLabel iconLbl = new JLabel("★") {
             @Override protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g;
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                        RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 g2.setColor(PURPLE_DARK);
                 g2.fillOval(0, 0, getWidth(), getHeight());
                 super.paintComponent(g);
@@ -365,27 +320,22 @@ public class TaskNovaUI {
         textBlock.add(nextLbl);
         textBlock.add(nextTaskName);
         textBlock.add(nextTaskMeta);
-
         card.add(iconLbl);
         card.add(textBlock);
         return card;
     }
 
-
-    //  TASK LIST CARD
-
+    // ── Task List Card ────────────────────────────────────
 
     private JPanel buildTaskListCard() {
         JPanel card = roundedCard();
         card.setLayout(new BorderLayout(0, 8));
         card.setBorder(new EmptyBorder(14, 16, 14, 16));
 
-        // Header row
         JPanel header = new JPanel(new BorderLayout());
         header.setBackground(WHITE);
         header.add(sectionLabel("TASKS RANKED BY PRIORITY"), BorderLayout.WEST);
 
-        // Column headers
         JPanel colHeaders = new JPanel(new BorderLayout());
         colHeaders.setBackground(WHITE);
         colHeaders.setBorder(new MatteBorder(0, 0, 1, 0, BORDER));
@@ -393,7 +343,6 @@ public class TaskNovaUI {
         JPanel cols = new JPanel(new GridLayout(1, 4));
         cols.setBackground(WHITE);
         cols.setBorder(new EmptyBorder(4, 0, 6, 0));
-
         for (String col : new String[]{"Task", "Deadline", "Importance", "Priority"}) {
             JLabel lbl = new JLabel(col);
             lbl.setFont(new Font("SansSerif", Font.PLAIN, 11));
@@ -404,12 +353,10 @@ public class TaskNovaUI {
 
         JPanel top = new JPanel(new BorderLayout());
         top.setBackground(WHITE);
-        top.add(header, BorderLayout.NORTH);
+        top.add(header,     BorderLayout.NORTH);
         top.add(colHeaders, BorderLayout.SOUTH);
-
         card.add(top, BorderLayout.NORTH);
 
-        // Scrollable task list
         taskListPanel = new JPanel();
         taskListPanel.setLayout(new BoxLayout(taskListPanel, BoxLayout.Y_AXIS));
         taskListPanel.setBackground(WHITE);
@@ -418,13 +365,10 @@ public class TaskNovaUI {
         scroll.setBorder(BorderFactory.createEmptyBorder());
         scroll.getViewport().setBackground(WHITE);
         card.add(scroll, BorderLayout.CENTER);
-
         return card;
     }
 
-    // ══════════════════════════════════════════════════════
-    //  REFRESH DASHBOARD
-    // ══════════════════════════════════════════════════════
+    // ── Dashboard Refresh ─────────────────────────────────
 
     private void refreshDashboard() {
         refreshStats();
@@ -436,12 +380,9 @@ public class TaskNovaUI {
     private void refreshStats() {
         List<Task> all = manager.getAllTasks();
         int total   = all.size();
-        int overdue = (int) all.stream()
-                .filter(t -> t.getDaysUntilDeadline() <= 0).count();
+        int overdue = (int) all.stream().filter(t -> t.getDaysUntilDeadline() <= 0).count();
         int dueSoon = (int) all.stream()
-                .filter(t -> t.getDaysUntilDeadline() > 0
-                        && t.getDaysUntilDeadline() <= 3).count();
-
+                .filter(t -> t.getDaysUntilDeadline() > 0 && t.getDaysUntilDeadline() <= 3).count();
         totalLabel.setText(String.valueOf(total));
         dueSoonLabel.setText(String.valueOf(dueSoon));
         overdueLabel.setText(String.valueOf(overdue));
@@ -450,7 +391,6 @@ public class TaskNovaUI {
     private void refreshAlerts() {
         alertPanel.removeAll();
         List<Task> alerts = manager.getAlerts();
-
         if (alerts.isEmpty()) {
             JLabel none = new JLabel("No upcoming deadlines within 3 days.");
             none.setFont(new Font("SansSerif", Font.PLAIN, 12));
@@ -458,9 +398,7 @@ public class TaskNovaUI {
             none.setBorder(new EmptyBorder(6, 0, 6, 0));
             alertPanel.add(none);
         } else {
-            for (Task t : alerts) {
-                alertPanel.add(buildAlertRow(t));
-            }
+            for (Task t : alerts) alertPanel.add(buildAlertRow(t));
         }
         alertPanel.revalidate();
         alertPanel.repaint();
@@ -470,14 +408,11 @@ public class TaskNovaUI {
         JPanel row = new JPanel(new BorderLayout(8, 0));
         row.setBackground(WHITE);
         row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 36));
-        row.setBorder(new MatteBorder(0, 0, 1, 0, new Color(240, 238, 232)));
 
-        // Dot
         long days = t.getDaysUntilDeadline();
-        Color dotColor = days <= 0 ? RED_TEXT : ORANGE_TEXT;
         JLabel dot = new JLabel("●");
         dot.setFont(new Font("SansSerif", Font.PLAIN, 10));
-        dot.setForeground(dotColor);
+        dot.setForeground(days <= 0 ? RED_TEXT : ORANGE_TEXT);
         dot.setBorder(new EmptyBorder(0, 0, 0, 4));
 
         JLabel name = new JLabel(t.getName());
@@ -494,10 +429,9 @@ public class TaskNovaUI {
         left.add(dot);
         left.add(name);
 
-        row.add(left,   BorderLayout.WEST);
+        row.add(left,    BorderLayout.WEST);
         row.add(daysLbl, BorderLayout.EAST);
         row.setBorder(new EmptyBorder(6, 0, 6, 0));
-
         return row;
     }
 
@@ -510,17 +444,13 @@ public class TaskNovaUI {
             nextTaskName.setText(next.getName());
             nextTaskMeta.setText(String.format(
                     "Priority: %.4f  |  Due: %s  |  Importance: %d/5",
-                    next.getPriorityScore(),
-                    next.getDeadline(),
-                    next.getImportance()
-            ));
+                    next.getPriorityScore(), next.getDeadline(), next.getImportance()));
         }
     }
 
     private void refreshTaskList() {
         taskListPanel.removeAll();
         List<Task> tasks = manager.getAllTasks();
-
         if (tasks.isEmpty()) {
             JLabel empty = new JLabel("No tasks yet. Add one above!");
             empty.setFont(new Font("SansSerif", Font.PLAIN, 13));
@@ -529,9 +459,7 @@ public class TaskNovaUI {
             taskListPanel.add(empty);
         } else {
             int rank = 1;
-            for (Task t : tasks) {
-                taskListPanel.add(buildTaskRow(t, rank++));
-            }
+            for (Task t : tasks) taskListPanel.add(buildTaskRow(t, rank++));
         }
         taskListPanel.revalidate();
         taskListPanel.repaint();
@@ -543,7 +471,6 @@ public class TaskNovaUI {
         row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 42));
         row.setBorder(new EmptyBorder(8, 0, 8, 0));
 
-        // Task name + rank
         JPanel nameCell = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 0));
         nameCell.setBackground(row.getBackground());
         JLabel rankLbl = new JLabel("#" + rank);
@@ -555,17 +482,14 @@ public class TaskNovaUI {
         nameCell.add(rankLbl);
         nameCell.add(nameLbl);
 
-        // Deadline
         JLabel deadlineLbl = new JLabel(t.getDeadline().toString());
         deadlineLbl.setFont(new Font("SansSerif", Font.PLAIN, 13));
         deadlineLbl.setForeground(TEXT_SEC);
 
-        // Importance
         JLabel impLbl = new JLabel(t.getImportance() + "/5");
         impLbl.setFont(new Font("SansSerif", Font.PLAIN, 13));
         impLbl.setForeground(TEXT_SEC);
 
-        // Priority score + badge
         JPanel scoreCell = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 0));
         scoreCell.setBackground(row.getBackground());
         JLabel scoreLbl = new JLabel(String.format("%.4f", t.getPriorityScore()));
@@ -574,7 +498,6 @@ public class TaskNovaUI {
         scoreCell.add(scoreLbl);
         scoreCell.add(buildBadge(t));
 
-        // Delete button
         JButton del = new JButton("✕");
         del.setFont(new Font("SansSerif", Font.PLAIN, 10));
         del.setForeground(TEXT_SEC);
@@ -583,30 +506,24 @@ public class TaskNovaUI {
         del.setFocusPainted(false);
         del.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         del.setPreferredSize(new Dimension(24, 24));
-        del.addActionListener(e -> {
-            manager.removeTask(t.getName());
-            refreshDashboard();
-        });
+        del.addActionListener(e -> { manager.removeTask(t.getName()); refreshDashboard(); });
         scoreCell.add(del);
 
         row.add(nameCell);
         row.add(deadlineLbl);
         row.add(impLbl);
         row.add(scoreCell);
-
         return row;
     }
 
     private JLabel buildBadge(Task t) {
         long days = t.getDaysUntilDeadline();
         String text; Color bg; Color fg;
-
         if      (days <= 0) { text = "OVERDUE";  bg = RED_BG;    fg = RED_TEXT;    }
         else if (days <= 1) { text = "CRITICAL"; bg = RED_BG;    fg = RED_TEXT;    }
         else if (days <= 3) { text = "HIGH";     bg = ORANGE_BG; fg = ORANGE_TEXT; }
         else if (days <= 7) { text = "MEDIUM";   bg = YELLOW_BG; fg = YELLOW_TEXT; }
         else                { text = "LOW";      bg = GREEN_BG;  fg = GREEN_TEXT;  }
-
         JLabel badge = new JLabel(text);
         badge.setFont(new Font("SansSerif", Font.BOLD, 10));
         badge.setForeground(fg);
@@ -616,16 +533,11 @@ public class TaskNovaUI {
         return badge;
     }
 
-
-    //  ADD TASK ACTION
-
+    // ── Add Task Action ───────────────────────────────────
 
     private void onAddTask() {
         String name = nameField.getText().trim();
-        if (name.isEmpty()) {
-            showError("Task name cannot be empty.");
-            return;
-        }
+        if (name.isEmpty()) { showError("Task name cannot be empty."); return; }
 
         LocalDate deadline;
         try {
@@ -637,26 +549,21 @@ public class TaskNovaUI {
 
         manager.addTask(name, deadline, selectedImportance);
 
-        // Reset form
         nameField.setText("");
         deadlineField.setText(LocalDate.now().plusDays(3).toString());
         selectedImportance = 3;
         refreshImportanceButtons();
-
         refreshDashboard();
     }
 
-    // ══════════════════════════════════════════════════════
-    //  HELPERS
-    // ══════════════════════════════════════════════════════
+    // ── Helpers ───────────────────────────────────────────
 
     private JPanel roundedCard() {
         JPanel card = new JPanel();
         card.setBackground(WHITE);
         card.setBorder(new CompoundBorder(
                 new LineBorder(BORDER, 1, true),
-                new EmptyBorder(0, 0, 0, 0)
-        ));
+                new EmptyBorder(0, 0, 0, 0)));
         return card;
     }
 
@@ -678,21 +585,17 @@ public class TaskNovaUI {
     private void styleTextField(JTextField f) {
         f.setBorder(new CompoundBorder(
                 new LineBorder(BORDER, 1, true),
-                new EmptyBorder(4, 8, 4, 8)
-        ));
+                new EmptyBorder(4, 8, 4, 8)));
         f.setBackground(new Color(157, 170, 202));
         f.setForeground(TEXT_PRI);
         f.setAlignmentX(Component.LEFT_ALIGNMENT);
     }
 
     private void showError(String msg) {
-        JOptionPane.showMessageDialog(frame, msg, "Input Error",
-                JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(frame, msg, "Input Error", JOptionPane.ERROR_MESSAGE);
     }
 
-    // ══════════════════════════════════════════════════════
-    //  SAMPLE DATA
-    // ══════════════════════════════════════════════════════
+    // ── Sample Data (first launch only) ──────────────────
 
     private void loadSampleTasks() {
         manager.addTask("Submit Assignment",  LocalDate.now().plusDays(2),  5);
