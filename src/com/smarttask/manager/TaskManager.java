@@ -115,7 +115,7 @@ public class TaskManager {
     public void showNextTask() {
         Task next = avlTree.getHighestPriority();
         System.out.println("\n╔══════════════════════════════════════════════════════════╗");
-        System.out.println("║           🎯 RECOMMENDED NEXT TASK                      ║");
+        System.out.println("║            RECOMMENDED NEXT TASK                      ║");
         System.out.println("╚══════════════════════════════════════════════════════════╝");
         if (next == null) System.out.println("  No tasks available.");
         else System.out.println("  👉 " + next);
@@ -129,7 +129,7 @@ public class TaskManager {
 
     // ── Getters ──────────────────────────────────────────
 
-    /** True only if no save file existed before this launch. */
+
     public boolean isFirstRun()       { return firstRun; }
     public boolean hasTasks()         { return !avlTree.isEmpty(); }
     public int getAlertThreshold()    { return alertThreshold; }

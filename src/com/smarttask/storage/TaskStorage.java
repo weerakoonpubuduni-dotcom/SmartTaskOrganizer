@@ -8,15 +8,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Persists tasks to ~/.tasknova/tasks.json using plain Java (no external libs).
- *
- * JSON format written:
- * [
- *   {"name":"PDSA CW","deadline":"2026-04-23","importance":5},
- *   ...
- * ]
- */
+
 public class TaskStorage {
 
     private static final Path STORAGE_DIR  =
@@ -26,12 +18,11 @@ public class TaskStorage {
 
     // ── Public helper ─────────────────────────────────────
 
-    /** Returns the absolute path of the save file (for debug prints). */
+
     public static String getStoragePath() {
         return STORAGE_FILE.toAbsolutePath().toString();
     }
 
-    /** True only when the save file does NOT yet exist — call this BEFORE save(). */
     public static boolean isFirstRun() {
         return !Files.exists(STORAGE_FILE);
     }
@@ -127,7 +118,6 @@ public class TaskStorage {
 
     // ── Helpers ──────────────────────────────────────────
 
-    /** Splits inner JSON array content into individual { } object strings. */
     private static List<String> splitObjects(String content) {
         List<String> blocks = new ArrayList<>();
         int depth = 0, start = -1;
@@ -147,10 +137,7 @@ public class TaskStorage {
         return blocks;
     }
 
-    /**
-     * Parses one JSON object:
-     *   {"name":"PDSA CW","deadline":"2026-04-23","importance":5}
-     */
+
     private static Task parseTask(String obj) {
         try {
             String name        = extractString(obj, "name");
@@ -171,7 +158,6 @@ public class TaskStorage {
         }
     }
 
-    /** Extracts value of a JSON string field: "key":"value" */
     private static String extractString(String obj, String key) {
         String search = "\"" + key + "\":\"";
         int start = obj.indexOf(search);
@@ -182,7 +168,6 @@ public class TaskStorage {
         return obj.substring(start, end);
     }
 
-    /** Extracts value of a JSON integer field: "key":value */
     private static int extractInt(String obj, String key) {
         String search = "\"" + key + "\":";
         int start = obj.indexOf(search);
@@ -193,7 +178,6 @@ public class TaskStorage {
         return Integer.parseInt(obj.substring(start, end));
     }
 
-    /** Escapes a Java string for safe embedding in JSON. */
     private static String jsonString(String s) {
         return "\"" + s.replace("\\", "\\\\").replace("\"", "\\\"") + "\"";
     }

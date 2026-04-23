@@ -11,7 +11,7 @@ public class Task {
 
     public Task(String name, LocalDate deadline,int importance){
         if (importance <1 || importance >5){
-            throw new IllegalArgumentException("Imporance must be between 1 and 5");
+            throw new IllegalArgumentException("Importance must be between 1 and 5");
         }
         this.name = name;
         this.deadline = deadline;

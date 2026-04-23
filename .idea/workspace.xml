@@ -6,8 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="da555162-269c-42db-b1ca-f5f3f0bbd2b7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/SmartTaskOrganizer/com/smarttask/ui/TaskNovaUI.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SmartTaskOrganizer/com/smarttask/ui/TaskNovaUI.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/smarttask/ui/TaskNovaUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/smarttask/ui/TaskNovaUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/smarttask/manager/TaskManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/smarttask/manager/TaskManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/smarttask/model/Task.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/smarttask/model/Task.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/smarttask/storage/TaskStorage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/smarttask/storage/TaskStorage.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
