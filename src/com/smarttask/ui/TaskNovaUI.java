@@ -1,8 +1,6 @@
 package com.smarttask.ui;
-
 import com.smarttask.manager.TaskManager;
 import com.smarttask.model.Task;
-
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
@@ -43,14 +41,14 @@ public class TaskNovaUI {
     private JLabel nextTaskMeta;
 
     // ─── Colors ───────────────────────────────────────────
-    private static final Color BG          = new Color(245, 245, 243);
+    private static final Color BG          = new Color(208, 183, 234);
     private static final Color WHITE       = Color.WHITE;
     private static final Color PURPLE_LIGHT= new Color(238, 237, 254);
     private static final Color PURPLE_MID  = new Color(127, 119, 221);
     private static final Color PURPLE_DARK = new Color(60,  52,  137);
     private static final Color BORDER      = new Color(220, 218, 212);
     private static final Color TEXT_PRI    = new Color(30,  30,  28);
-    private static final Color TEXT_SEC    = new Color(110, 108, 100);
+    private static final Color TEXT_SEC    = new Color(85, 84, 80);
     private static final Color RED_BG      = new Color(252, 235, 235);
     private static final Color RED_TEXT    = new Color(163, 45,  45);
     private static final Color ORANGE_BG   = new Color(250, 238, 218);
@@ -60,12 +58,12 @@ public class TaskNovaUI {
     private static final Color GREEN_BG    = new Color(234, 243, 222);
     private static final Color GREEN_TEXT  = new Color(59,  109, 17);
 
-    // ─── Constructor ──────────────────────────────────────
+    // ─── Constructor
     public TaskNovaUI() {
         this.manager = new TaskManager(3);
     }
 
-    // ─── Entry Point ──────────────────────────────────────
+    // ─── Entry Point
     public void start() {
         SwingUtilities.invokeLater(() -> {
             buildFrame();
@@ -293,7 +291,7 @@ public class TaskNovaUI {
             } else {
                 impButtons[i].setBackground(new Color(132, 120, 234));
                 impButtons[i].setForeground(TEXT_SEC);
-                impButtons[i].setBorder(new LineBorder(BORDER, 1, true));
+                impButtons[i].setBorder(new LineBorder(BORDER, 3, true));
             }
         }
     }

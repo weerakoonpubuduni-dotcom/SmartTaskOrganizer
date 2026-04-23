@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="da555162-269c-42db-b1ca-f5f3f0bbd2b7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/SmartTaskOrganizer/com/smarttask/ui/TaskNovaUI.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SmartTaskOrganizer/com/smarttask/ui/TaskNovaUI.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/smarttask/ui/TaskNovaUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/smarttask/ui/TaskNovaUI.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -77,8 +76,13 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/com/smarttask/ui/TaskNovaUI.java</url>
-          <line>293</line>
+          <line>291</line>
           <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/com/smarttask/ui/TaskNovaUI.java</url>
+          <line>44</line>
+          <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
