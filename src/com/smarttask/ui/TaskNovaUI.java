@@ -28,7 +28,7 @@ public class TaskNovaUI {
     private JLabel nextTaskName, nextTaskMeta;
 
     // ─── Colors ───────────────────────────────────────────
-    private static final Color BG          = new Color(216, 195, 237);
+    private static final Color BG          = new Color(236, 224, 248);
     private static final Color WHITE       = Color.WHITE;
     private static final Color PURPLE_LIGHT= new Color(238, 237, 254);
     private static final Color PURPLE_MID  = new Color(127, 119, 221);
@@ -45,7 +45,7 @@ public class TaskNovaUI {
     private static final Color YELLOW_TEXT = new Color(186, 117, 23);
     private static final Color GREEN_BG    = new Color(234, 243, 222);
     private static final Color GREEN_TEXT  = new Color(59,  109, 17);
-    private static final Color BLUE_TEXT  = new Color(212, 232, 236);
+    private static final Color BLUE_TEXT  = new Color(223, 239, 243);
 
     public TaskNovaUI() {
         this.manager = new TaskManager(3);
@@ -99,18 +99,18 @@ public class TaskNovaUI {
         left.setBackground(WHITE);
 
         JLabel icon = new JLabel("▦");
-        icon.setFont(new Font("SansSerif", Font.BOLD, 18));
+        icon.setFont(new Font("SansSerif", Font.BOLD, 25));
         icon.setForeground(PURPLE_MID);
 
         JPanel titleBlock = new JPanel(new GridLayout(2, 1, 0, 1));
         titleBlock.setBackground(WHITE);
 
         JLabel title = new JLabel("TaskNova");
-        title.setFont(new Font("SansSerif", Font.BOLD, 18));
+        title.setFont(new Font("SansSerif", Font.BOLD, 20));
         title.setForeground(TEXT_PRI);
 
         JLabel sub = new JLabel("Smart Task Priority Organizer");
-        sub.setFont(new Font("SansSerif", Font.PLAIN, 11));
+        sub.setFont(new Font("SansSerif", Font.BOLD, 15));
         sub.setForeground(TEXT_SEC);
 
         titleBlock.add(title);
@@ -239,10 +239,10 @@ public class TaskNovaUI {
         for (int i = 1; i <= 5; i++) {
             final int val = i;
             JButton btn = new JButton(String.valueOf(i));
-            btn.setFont(new Font("SansSerif", Font.PLAIN, 12));
+            btn.setFont(new Font("SansSerif", Font.PLAIN, 10));
             btn.setFocusPainted(false);
             btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            btn.setBorder(new LineBorder(BORDER, 0, true));
+            btn.setBorder(new LineBorder(BORDER, 1, true));
             btn.addActionListener(e -> { selectedImportance = val; refreshImportanceButtons(); });
             impButtons[i - 1] = btn;
             row.add(btn);
@@ -258,7 +258,7 @@ public class TaskNovaUI {
                 impButtons[i].setForeground(PURPLE_DARK);
                 impButtons[i].setBorder(new LineBorder(PURPLE_MID, 1, true));
             } else {
-                impButtons[i].setBackground(new Color(154, 136, 172));
+                impButtons[i].setBackground(new Color(178, 166, 191));
                 impButtons[i].setForeground(TEXT_PRI);
                 impButtons[i].setBorder(new LineBorder(BORDER, 1, true));
             }
@@ -337,7 +337,7 @@ public class TaskNovaUI {
 
         JPanel header = new JPanel(new BorderLayout());
         header.setBackground(WHITE);
-        header.add(sectionLabel("TASKS RANKED BY PRIORITY"), BorderLayout.WEST);
+        header.add(sectionLabel("TASKS RANKER"), BorderLayout.WEST);
 
         JPanel colHeaders = new JPanel(new BorderLayout());
         colHeaders.setBackground(WHITE);
